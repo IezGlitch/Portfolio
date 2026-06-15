@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLITCH — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0D0D;
+    --panel: #1A1A1A;
+    --paper: #ECECEC;
+    --muted: #9A9A9A;
+    --line: rgba(255,255,255,0.08);
+    --font-display: 'Anton', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--paper);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  ::selection { background: var(--paper); color: var(--bg); }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--paper);
+    outline-offset: 3px;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+
+  /* ===== Top bar ===== */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 56px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
+  }
+
+  .topbar .date { color: var(--muted); }
+
+  .topbar nav {
+    display: flex;
+    gap: 32px;
+  }
+
+  .topbar nav a {
+    color: var(--paper);
+    transition: opacity 0.2s ease;
+  }
+  .topbar nav a:hover { opacity: 0.6; }
+
+  /* ===== Section base ===== */
+  section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 0 0;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .meta-date {
+    position: absolute;
+    top: 28px;
+    right: 56px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== Footer bar (repeats) ===== */
+  .footbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 56px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footbar a {
+    transition: color 0.2s ease;
+  }
+  .footbar a:hover { color: var(--paper); }
+
+  /* ===== HERO ===== */
+  .hero {
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .hero-titles {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.92;
+    text-transform: uppercase;
+    font-size: clamp(4rem, 16vw, 11rem);
+    letter-spacing: -0.01em;
+  }
+
+  .hero-titles .accent { color: var(--muted); }
+
+  .hero-subname {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  /* ===== Parallax ===== */
+  .parallax-layer {
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+
+  .ghost-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(8rem, 32vw, 26rem);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 0;
+    line-height: 1;
+    will-change: transform;
+  }
+
+  section { position: relative; overflow: hidden; }
+  section > .container { position: relative; z-index: 1; }
+  section > .footbar { position: relative; z-index: 1; }
+
+  .hero-side {
+    position: absolute;
+    top: 28px;
+    right: 56px;
+    text-align: right;
+    max-width: 280px;
+  }
+
+  .hero-side .role {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .hero-side .by {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .hero-bottom p {
+    max-width: 480px;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .hero-bottom p strong { color: var(--paper); }
+
+  .scroll-cue {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+
+  .scroll-cue .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--paper);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  /* ===== ABOUT (Introduction) ===== */
+  #about .about-head h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  #about .about-head p {
+    max-width: 540px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-bottom: 48px;
+  }
+
+  #about .about-head p strong { color: var(--paper); }
+
+  .about-media {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .media-block {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .media-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent, transparent 18px, var(--line) 18px, var(--line) 19px);
+  }
+
+  .media-block span { position: relative; z-index: 1; }
+
+  /* ===== SKILLS ===== */
+  #skills .skills-head {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    align-items: start;
+  }
+
+  #skills h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6.5vw, 5rem);
+    line-height: 1;
+  }
+
+  #skills .skills-head p {
+    color: var(--muted);
+    font-size: 1rem;
+    padding-top: 12px;
+  }
+
+  .skills-feature {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .skills-feature .media-block {
+    aspect-ratio: auto;
+    min-height: 420px;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .skills-list .skill-item h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .skills-list .skill-item p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 360px;
+  }
+
+  /* ===== PROJECTS ===== */
+  #projects .projects-head h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    line-height: 1;
+    margin-bottom: 60px;
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .project-row .media-block {
+    aspect-ratio: 4/3;
+  }
+
+  .project-info {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .project-info .project-num {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+
+  .project-info h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .project-info p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 100px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .project-link-row {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: gap 0.2s ease;
+  }
+
+  .project-link-row:hover { gap: 16px; }
+
+  /* ===== CONTACT ===== */
+  #contact {
+    justify-content: center;
+  }
+
+  #contact .contact-title {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 0.95;
+    font-size: clamp(3.5rem, 13vw, 9.5rem);
+    margin-bottom: 48px;
+  }
+
+  #contact .contact-title .accent { color: var(--muted); }
+
+  .contact-links {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-bottom: 80px;
+  }
+
+  .contact-links a {
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 6px;
+    transition: border-color 0.2s ease;
+  }
+
+  .contact-links a:hover {
+    border-color: var(--paper);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .container { padding: 0 28px; }
+    .topbar, .meta-date { padding: 24px 28px; }
+    .meta-date { right: 28px; }
+    .hero-side { right: 28px; top: 80px; text-align: left; max-width: 220px; }
+    .about-media, .project-row, .skills-feature, #skills .skills-head {
+      grid-template-columns: 1fr;
+    }
+    .footbar { padding: 24px 28px; justify-content: center; text-align: center; }
+    .skills-feature .media-block { min-height: 260px; }
+    section { padding: 160px 0 0; }
+  }
+
+  @media (max-width: 540px) {
+    .topbar nav { gap: 16px; font-size: 0.7rem; }
+    .hero-side { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="date">GLITCH</div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="ghost-text parallax-layer" data-speed="0.25">GLITCH</div>
+  <div class="container" style="width:100%;">
+    <div class="hero-side">
+      <div class="role">Aspiring Software Engineer</div>
+      <div class="by">B.Tech in Computer Science</div>
+    </div>
+
+    <h1 class="hero-titles parallax-layer" data-speed="-0.15">
+      GLITCH<br>
+      <span class="accent">PORTFOLIO.</span>
+    </h1>
+    <p class="hero-subname">— Pratik</p>
+
+    <div class="hero-bottom">
+      <p>
+        I'm a <strong>Computer Science undergraduate</strong> learning to design,
+        build, and ship software — from algorithms to full applications.
+        This is a small collection of what I'm working on.
+      </p>
+      <div class="scroll-cue"><span class="dot"></span> Scroll to explore</div>
+    </div>
+  </div>
+  <div class="footbar">
+    <span>@glitch</span>
+    <span>glitch.dev</span>
+    <span>sharma.shreyansh82929@gmail.com</span>
+  </div>
+</section>
+
+<!-- ABOUT / INTRODUCTION -->
+<section id="about">
+  <div class="ghost-text parallax-layer" data-speed="0.2">ABOUT</div>
+  <div class="meta-date">Personal Portfolio</div>
+  <div class="container" style="width:100%;">
+    <div class="about-head reveal">
+      <p class="eyebrow">Introduction</p>
+      <h2>About Me</h2>
+      <p>
+        Hey this is Pratik, a Computer Science undergraduate with a strong interest in
+        <strong>software development</strong> and <strong>problem solving</strong>.
+        I enjoy understanding how systems work under the hood — from algorithms to
+        architecture — and turning that understanding into working code. I'm currently
+        focused on strengthening my fundamentals while building projects that put
+        theory into practice.
+      </p>
+    </div>
+    <div class="about-media reveal">
+      <div class="media-block"><span>Your photo here<br>(e.g. profile picture)</span></div>
+      <div class="media-block"><span>Workspace / setup<br>or campus photo</span></div>
+    </div>
+  </div>
+  <div class="footbar">
+    <span>@glitch</span>
+    <span>glitch.dev</span>
+    <span>sharma.shreyansh82929@gmail.com</span>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="ghost-text parallax-layer" data-speed="0.2">SKILLS</div>
+  <div class="meta-date">Personal Portfolio</div>
+  <div class="container" style="width:100%;">
+    <div class="skills-head reveal">
+      <h2>Personal<br>Skills</h2>
+      <p>
+        A snapshot of the languages, tools, and concepts I'm building my
+        foundation on — and actively using in coursework and personal projects.
+      </p>
+    </div>
+    <div class="skills-feature reveal">
+      <div class="media-block"><span>Coding / project<br>screenshot here</span></div>
+      <div class="skills-list">
+        <div class="skill-item">
+          <h3>Languages</h3>
+          <p>Java, Python, and JavaScript — used across coursework, DSA practice, and personal projects.</p>
+        </div>
+        <div class="skill-item">
+          <h3>Web Development</h3>
+          <p>HTML, CSS, React, and Node.js for building and styling interactive applications(Using Mernstack).</p>
+        </div>
+        <div class="skill-item">
+          <h3>Foundations & Tools</h3>
+          <p>Data structures, algorithms, DBMS, OOP, Git/GitHub, and Linux fundamentals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footbar">
+    <span>@glitch</span>
+    <span>glitch.dev</span>
+    <span>sharma.shreyansh82929@gmail.com</span>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="ghost-text parallax-layer" data-speed="0.2">WORK</div>
+  <div class="meta-date">Personal Portfolio</div>
+  <div class="container" style="width:100%;">
+    <div class="projects-head reveal">
+      <p class="eyebrow">Project Portfolio</p>
+      <h2>Things I've<br>Built</h2>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="media-block"><span>Project 1<br>screenshot / preview</span></div>
+      <div class="project-info">
+        <div>
+          <div class="project-num">01</div>
+          <h3>Project One</h3>
+          <p>A short description — what it does, the problem it solves, and what makes it interesting.</p>
+          <div class="project-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">HTML/CSS</span>
+          </div>
+        </div>
+        <a href="#" class="project-link-row">View Project →</a>
+      </div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="project-info">
+        <div>
+          <div class="project-num">02</div>
+          <h3>Project Two</h3>
+          <p>A short description — what it does, the problem it solves, and what makes it interesting.</p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">SQL</span>
+          </div>
+        </div>
+        <a href="#" class="project-link-row">View Project →</a>
+      </div>
+      <div class="media-block"><span>Project 2<br>screenshot / preview</span></div>
+    </div>
+
+    <div class="project-row reveal">
+      <div class="media-block"><span>Project 3<br>screenshot / preview</span></div>
+      <div class="project-info">
+        <div>
+          <div class="project-num">03</div>
+          <h3>Project Three</h3>
+          <p>A short description — what it does, the problem it solves, and what makes it interesting.</p>
+          <div class="project-tags">
+            <span class="tag">Java</span>
+            <span class="tag">DSA</span>
+          </div>
+        </div>
+        <a href="#" class="project-link-row">View Project →</a>
+      </div>
+    </div>
+  </div>
+  <div class="footbar">
+    <span>@glitch</span>
+    <span>glitch.dev</span>
+    <span>sharma.shreyansh82929@gmail.com</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="ghost-text parallax-layer" data-speed="0.2">TALK</div>
+  <div class="container" style="width:100%;">
+    <p class="eyebrow reveal" style="text-align:left;">Get in touch</p>
+    <h2 class="contact-title reveal">
+      LET'S<br><span class="accent">CONNECT.</span>
+    </h2>
+    <div class="contact-links reveal">
+      <a href="mailto:[email protected]">[email protected]</a>
+      <a href="https://github.com/xdiezsus">GitHub</a>
+      <a href="https://www.linkedin.com/in/notpratik/">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footbar">
+    <span>@glitch</span>
+    <span>glitch.dev</span>
+    <span>© 2026 GLITCH</span>
+  </div>
+</section>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== Parallax =====
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = Array.from(document.querySelectorAll('.parallax-layer'));
+
+  let ticking = false;
+
+  function updateParallax() {
+    const viewportH = window.innerHeight;
+    const scrollY = window.scrollY;
+
+    parallaxEls.forEach(el => {
+      const speed = parseFloat(el.dataset.speed) || 0;
+      const rect = el.getBoundingClientRect();
+      const elTop = rect.top + scrollY;
+      // offset relative to viewport center for a balanced effect
+      const offset = (scrollY + viewportH / 2 - (elTop + rect.height / 2)) * speed;
+      el.style.transform = el.classList.contains('ghost-text')
+        ? `translate(-50%, calc(-50% + ${offset}px))`
+        : `translateY(${offset}px)`;
+    });
+
+    ticking = false;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  }
+
+  if (!reduceMotion) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    updateParallax();
+  }
+</script>
+
+</body>
+</html>
