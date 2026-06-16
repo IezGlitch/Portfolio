@@ -157,6 +157,138 @@
     margin-top: 20px;
   }
 
+  /* ===== Glitch effect ===== */
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .glitch-text::before {
+    left: 3px;
+    color: #ff2e63;
+    mix-blend-mode: screen;
+    animation: glitch-before 2.5s infinite;
+  }
+
+  .glitch-text::after {
+    left: -3px;
+    color: #2eb6ff;
+    mix-blend-mode: screen;
+    animation: glitch-after 2.5s infinite;
+  }
+
+  @keyframes glitch-before {
+    0%, 78%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    78.5% { opacity: 1; clip-path: inset(10% 0 60% 0); transform: translate(-5px, 1px); }
+    79% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    79.5% { opacity: 1; clip-path: inset(55% 0 10% 0); transform: translate(4px, -2px); }
+    80.5% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    81% { opacity: 1; clip-path: inset(30% 0 40% 0); transform: translate(-3px, 2px); }
+    82% { opacity: 1; clip-path: inset(5% 0 80% 0); transform: translate(5px, 0); }
+    82.5% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    88% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    88.3% { opacity: 1; clip-path: inset(40% 0 20% 0); transform: translate(-4px, 1px); }
+    88.6% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    89% { opacity: 1; clip-path: inset(15% 0 70% 0); transform: translate(3px, -1px); }
+    89.5% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+  }
+
+  @keyframes glitch-after {
+    0%, 77%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+    77.5% { opacity: 1; clip-path: inset(70% 0 5% 0); transform: translate(5px, -1px); }
+    78% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    78.7% { opacity: 1; clip-path: inset(15% 0 65% 0); transform: translate(-4px, 2px); }
+    79.7% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    80.3% { opacity: 1; clip-path: inset(45% 0 25% 0); transform: translate(3px, -1px); }
+    81.3% { opacity: 1; clip-path: inset(75% 0 5% 0); transform: translate(-5px, 0); }
+    81.8% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    87.5% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    87.8% { opacity: 1; clip-path: inset(60% 0 15% 0); transform: translate(4px, -1px); }
+    88.1% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    88.6% { opacity: 1; clip-path: inset(20% 0 55% 0); transform: translate(-3px, 1px); }
+    89.1% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+  }
+
+  .glitch-text:hover::before,
+  .glitch-text:hover::after {
+    animation-duration: 0.15s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glitch-text::before, .glitch-text::after { animation: none !important; opacity: 0 !important; }
+  }
+
+  /* ===== Scanlines / noise overlay ===== */
+  .scanline-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .scanline-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
+    background-size: 100% 8px;
+    animation: scan-move 8s linear infinite;
+  }
+
+  @keyframes scan-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 1000px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scanline-overlay::after { animation: none; }
+  }
+
+  /* ===== Section title glitch flicker (subtle) ===== */
+  .glitch-flicker {
+    animation: flicker 3.2s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 89%, 100% { opacity: 1; text-shadow: none; }
+    89.3% { opacity: 0.6; text-shadow: -4px 0 #ff2e63, 4px 0 #2eb6ff; }
+    89.6% { opacity: 1; text-shadow: none; }
+    90% { opacity: 0.8; text-shadow: 4px 0 #ff2e63, -4px 0 #2eb6ff; }
+    90.4% { opacity: 1; text-shadow: none; }
+    91% { opacity: 0.5; text-shadow: -3px 0 #ff2e63, 3px 0 #2eb6ff; }
+    91.3% { opacity: 1; text-shadow: none; }
+    95% { opacity: 1; text-shadow: none; }
+    95.3% { opacity: 0.7; text-shadow: 3px 0 #ff2e63, -3px 0 #2eb6ff; }
+    95.6% { opacity: 1; text-shadow: none; }
+    96% { opacity: 0.85; text-shadow: -4px 0 #ff2e63, 4px 0 #2eb6ff; }
+    96.4% { opacity: 1; text-shadow: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glitch-flicker { animation: none; }
+  }
+
   /* ===== Parallax ===== */
   .parallax-layer {
     will-change: transform;
@@ -489,10 +621,12 @@
 </head>
 <body>
 
+<div class="scanline-overlay" aria-hidden="true"></div>
+
 <div class="topbar">
   <div class="date">GLITCH</div>
   <nav>
-    <a href="#about">About</a>
+    <a href="#about">About Me</a>
     <a href="#projects">Projects</a>
     <a href="#skills">Skills</a>
     <a href="#contact">Contact</a>
@@ -501,24 +635,24 @@
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="ghost-text parallax-layer" data-speed="0.25">GLITCH</div>
+  <div class="ghost-text parallax-layer glitch-flicker" data-speed="0.25" style="animation-delay:0s;">GLITCH</div>
   <div class="container" style="width:100%;">
     <div class="hero-side">
       <div class="role">Aspiring Software Engineer</div>
-      <div class="by">B.Tech in Computer Science</div>
+      <div class="by">in B.Tech Computer Science</div>
     </div>
 
     <h1 class="hero-titles parallax-layer" data-speed="-0.15">
-      GLITCH<br>
-      <span class="accent">PORTFOLIO.</span>
+      <span class="glitch-text" data-text="GLITCH">GLITCH'S</span><br>
+      <span class="glitch-text accent" data-text="PORTFOLIO.">PORTFOLIO.</span>
     </h1>
-    <p class="hero-subname">— Pratik</p>
+    <p class="hero-subname">— Pratik Sharma</p>
 
     <div class="hero-bottom">
       <p>
         I'm a <strong>Computer Science undergraduate</strong> learning to design,
         build, and ship software — from algorithms to full applications.
-        This is a small collection of what I'm working on.
+        This is a small contributiion of work which i am trying to do.
       </p>
       <div class="scroll-cue"><span class="dot"></span> Scroll to explore</div>
     </div>
@@ -526,18 +660,18 @@
   <div class="footbar">
     <span>@glitch</span>
     <span>glitch.dev</span>
-    <span>sharma.shreyansh82929@gmail.com</span>
+    <span>[email protected]</span>
   </div>
 </section>
 
 <!-- ABOUT / INTRODUCTION -->
 <section id="about">
-  <div class="ghost-text parallax-layer" data-speed="0.2">ABOUT</div>
+  <div class="ghost-text parallax-layer glitch-flicker" data-speed="0.2" style="animation-delay:0.7s;">ABOUT</div>
   <div class="meta-date">Personal Portfolio</div>
   <div class="container" style="width:100%;">
     <div class="about-head reveal">
       <p class="eyebrow">Introduction</p>
-      <h2>About Me</h2>
+      <h2><span class="glitch-text" data-text="About Me">About Me</span></h2>
       <p>
         Hey this is Pratik, a Computer Science undergraduate with a strong interest in
         <strong>software development</strong> and <strong>problem solving</strong>.
@@ -555,17 +689,17 @@
   <div class="footbar">
     <span>@glitch</span>
     <span>glitch.dev</span>
-    <span>sharma.shreyansh82929@gmail.com</span>
+    <span>[email protected]</span>
   </div>
 </section>
 
 <!-- SKILLS -->
 <section id="skills">
-  <div class="ghost-text parallax-layer" data-speed="0.2">SKILLS</div>
+  <div class="ghost-text parallax-layer glitch-flicker" data-speed="0.2" style="animation-delay:1.5s;">SKILLS</div>
   <div class="meta-date">Personal Portfolio</div>
   <div class="container" style="width:100%;">
     <div class="skills-head reveal">
-      <h2>Personal<br>Skills</h2>
+      <h2><span class="glitch-text" data-text="Personal">Personal</span><br><span class="glitch-text" data-text="Skills">Skills</span></h2>
       <p>
         A snapshot of the languages, tools, and concepts I'm building my
         foundation on — and actively using in coursework and personal projects.
@@ -580,7 +714,7 @@
         </div>
         <div class="skill-item">
           <h3>Web Development</h3>
-          <p>HTML, CSS, React, and Node.js for building and styling interactive applications(Using Mernstack).</p>
+          <p>HTML, CSS, React, and Node.js for building(MERN Stack) and styling interactive applications.</p>
         </div>
         <div class="skill-item">
           <h3>Foundations & Tools</h3>
@@ -592,18 +726,18 @@
   <div class="footbar">
     <span>@glitch</span>
     <span>glitch.dev</span>
-    <span>sharma.shreyansh82929@gmail.com</span>
+    <span>[email protected]</span>
   </div>
 </section>
 
 <!-- PROJECTS -->
 <section id="projects">
-  <div class="ghost-text parallax-layer" data-speed="0.2">WORK</div>
+  <div class="ghost-text parallax-layer glitch-flicker" data-speed="0.2" style="animation-delay:2.2s;">WORK</div>
   <div class="meta-date">Personal Portfolio</div>
   <div class="container" style="width:100%;">
     <div class="projects-head reveal">
       <p class="eyebrow">Project Portfolio</p>
-      <h2>Things I've<br>Built</h2>
+      <h2><span class="glitch-text" data-text="Things I've">Things I've</span><br><span class="glitch-text" data-text="Built">Built</span></h2>
     </div>
 
     <div class="project-row reveal">
@@ -657,22 +791,23 @@
   <div class="footbar">
     <span>@glitch</span>
     <span>glitch.dev</span>
-    <span>sharma.shreyansh82929@gmail.com</span>
+    <span>[email protected]</span>
   </div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
-  <div class="ghost-text parallax-layer" data-speed="0.2">TALK</div>
+  <div class="ghost-text parallax-layer glitch-flicker" data-speed="0.2" style="animation-delay:0.4s;">TALK</div>
+  <div class="meta-date">Personal Portfolio</div>
   <div class="container" style="width:100%;">
     <p class="eyebrow reveal" style="text-align:left;">Get in touch</p>
     <h2 class="contact-title reveal">
-      LET'S<br><span class="accent">CONNECT.</span>
+      <span class="glitch-text" data-text="LET'S">LET'S</span><br><span class="glitch-text accent" data-text="CONNECT.">CONNECT.</span>
     </h2>
     <div class="contact-links reveal">
       <a href="mailto:[email protected]">[email protected]</a>
-      <a href="https://github.com/xdiezsus">GitHub</a>
-      <a href="https://www.linkedin.com/in/notpratik/">LinkedIn</a>
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
     </div>
   </div>
   <div class="footbar">
